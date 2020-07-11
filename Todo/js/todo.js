@@ -1,14 +1,12 @@
-// select the elements
 const clear = document.querySelector(".clear");
 const dateElement = document.getElementById("date");
 const list = document.getElementById("list");
 const input = document.getElementById("input");
 
-// classes name
 const Check = "fa-check-circle";
 const Uncheck = "fa-circle-thin";
 const strike = "lineThrough";
-// variables
+
 let Lists,id;
 
 // get list from localstorage
@@ -25,7 +23,7 @@ else
     Lists = [];
     id = 0;
 }
-
+// to load all tasks from localstorage
 function loadList(array)
 {
     array.forEach(function(item){
@@ -35,14 +33,13 @@ function loadList(array)
 // add list from localstorage
 // localStorage.setItem("Task",JSON.stringify(Lists));
 
-// show date
+// to show today's date
 const options = {weekday: "long", month:"short",day:"numeric"};
 const today = new Date();
 
 dateElement.innerHTML = today.toLocaleDateString("en-US",options);
 
-// function to-do
-
+// function to add task
 function addTAsk(task, id, done, removed)
 {
     if(removed)
@@ -61,14 +58,16 @@ function addTAsk(task, id, done, removed)
     const position = "beforeend";
     list.insertAdjacentHTML(position, item);
 }
-// add task to list
+// add task to list when we press Enter key
 document.addEventListener("keyup",function(even)
 {
     if(event.keyCode == 13)
+    // keycode of enter key is 13
     {
         const task = input.value;
         if(task)
         {
+            // calling addTask function
             addTAsk(task,id,false,false);
 
             Lists.push({
@@ -77,19 +76,22 @@ document.addEventListener("keyup",function(even)
                 done: false,
                 removed: false
             });
-
+            
+            // to fetch tasks from localstorage
             localStorage.setItem("Tasks",JSON.stringify(Lists));     
             id++;
         }
+
+        // to clear input box after we press enter key to add task to list
         input.value = "";
     }
     
 });
+
 // testing function
 // addTAsk("Cook",1, true,false);
 
-// completed
-
+// function to toggle between task completed or not
 function completedTask(e)
 {
     e.classList.toggle(Check);
@@ -99,8 +101,7 @@ function completedTask(e)
     Lists[e.id].done = Lists[e.id].done ? false : true;
 }
 
-// removed task
-
+// function to remove task from list
 function removedTask(e)
 {
     e.parentNode.parentNode.removeChild(e.parentNode);
@@ -108,10 +109,11 @@ function removedTask(e)
     Lists[e.id].removed = true;
 }
 
-// target to create items dynamically
-
+// target to create items dynamically by calling functions
 list.addEventListener("click",function(event){
     const item = event.target;
+    
+    // to check whether the task is completed or deleted
     const eventJob = item.attributes.job.value;
 
     if(eventJob == "complete")
@@ -122,8 +124,11 @@ list.addEventListener("click",function(event){
     {
         removedTask(item);
     }
+    // to fetch tasks from localstorage
     localStorage.setItem("Tasks",JSON.stringify(Lists));
 });
+
+// function to clear all tasks from the list
 clear.addEventListener("click",function(){
     localStorage.clear();
     location.reload();
